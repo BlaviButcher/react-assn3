@@ -9,6 +9,14 @@ class Landing extends Component<{}, { projects: Project[]; loading: boolean }> {
       projects: [],
       loading: true,
     };
+    this.removeProject = this.removeProject.bind(this);
+  }
+
+  removeProject(projectIdentifier: string) {
+    const projects = this.state.projects.filter(
+      (project) => project.projectIdentifier !== projectIdentifier
+    );
+    this.setState({ projects });
   }
 
   componentDidMount() {
@@ -29,7 +37,10 @@ class Landing extends Component<{}, { projects: Project[]; loading: boolean }> {
       <div>
         <h1>Projects</h1>
         <button>Create New Project</button>
-        <ProjectList projects={this.state.projects} />
+        <ProjectList
+          projects={this.state.projects}
+          removeButtonClick={this.removeProject}
+        />
       </div>
     );
   }
