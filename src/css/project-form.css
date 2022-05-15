@@ -1,0 +1,19 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  height: 100%;
+  flex: 1;
+}
+
+button {
+  align-self: flex-end;
+}
+
+#button-wrap {
+  display: flex;
+justify-content: center;
+  border: 1px solid black;
+  min-height: 100%;
+  flex-grow: 1;
+}

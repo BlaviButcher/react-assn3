@@ -7,6 +7,21 @@ class Modal extends Component<{
   title: string;
   children: any;
 }> {
+  constructor(props: any) {
+    super(props);
+    this.escFunction = this.escFunction.bind(this);
+  }
+  escFunction(event: any) {
+    if (event.key === "Escape") {
+      this.props.onClose();
+    }
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.escFunction, false);
+  }
   render() {
     if (this.props.open) {
       return (
@@ -15,20 +30,13 @@ class Modal extends Component<{
             <div className="modal">
               <h2>{this.props.title}</h2>
               <div className="modal-content">{this.props.children}</div>
-              <div className="button-wrap">
-              <button
-                id="close"
-                className="close-button"
-                onClick={() => {
-                  this.props.onClose();
-                }}
-              >
-                Close
-              </button>
-              </div>
             </div>
           </div>
-          <div className="modal-overlay" id="modal-overlay"></div>
+          <div
+            className="modal-overlay"
+            onClick={() => this.props.onClose()}
+            id="modal-overlay"
+          ></div>
         </div>
       );
     }
