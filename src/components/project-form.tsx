@@ -16,6 +16,7 @@ class ProjectForm extends Component<{
         }}
       >
         <div className="form">
+          <div className="input-form-wrap">
           <label htmlFor="name">Project Name</label>
           <input
             type="text"
@@ -26,6 +27,8 @@ class ProjectForm extends Component<{
               this.props.onValueChange(e.target.id, e.target.value)
             }
           />
+          </div>
+          <div className="input-form-wrap">
           <label htmlFor="id">Project ID</label>
           <input
             type="text"
@@ -36,6 +39,8 @@ class ProjectForm extends Component<{
               this.props.onValueChange(e.target.id, e.target.value)
             }
           />
+          </div>
+          <div className="input-form-wrap">
           <label htmlFor="description">Project Description</label>
           <input
             type="text"
@@ -46,6 +51,8 @@ class ProjectForm extends Component<{
               this.props.onValueChange(e.target.id, e.target.value)
             }
           />
+          </div>
+          <div className="input-form-wrap">
           <label htmlFor="start">Start Date</label>
           <input
             type="datetime-local"
@@ -56,6 +63,8 @@ class ProjectForm extends Component<{
               this.props.onValueChange(e.target.id, e.target.value)
             }
           />
+          </div>
+          <div className="input-form-wrap">
           <label htmlFor="end">End Date</label>
           <input
             type="datetime-local"
@@ -66,9 +75,10 @@ class ProjectForm extends Component<{
               this.props.onValueChange(e.target.id, e.target.value)
             }
           />
+          </div>
         </div>
-        <div id="button-wrap">
-          <button type="submit">Submit</button>
+        <div id="button-wrap" >
+          <button type="submit" className="button" id="submit-button">Submit</button>
         </div>
       </form>
     );
