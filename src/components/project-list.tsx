@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Project } from "../types/project";
+import "../css/project-list.css";
 
 class ProjectList extends Component<{
   projects: Project[];
@@ -7,19 +8,20 @@ class ProjectList extends Component<{
 }> {
   render() {
     return (
-      <div>
+      <div id="list">
         {this.props.projects.map((project) => (
-          <div key={project.projectIdentifier}>
+          <div id="list-item" key={project.projectIdentifier}>
             <button
+              className="button"
               onClick={() =>
                 this.props.removeButtonClick(project.projectIdentifier)
               }
             >
               X
             </button>
-            <div>{project.projectName}</div>
-            <div>{project.startDate}</div>
-            <div>{project.endDate}</div>
+            <div id="name">{project.projectName}</div>
+            <div id="start-date">{project.startDate}</div>
+            <div id="end-date">{project.endDate}</div>
           </div>
         ))}
       </div>

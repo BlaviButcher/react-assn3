@@ -3,6 +3,7 @@ import { Project } from "../types/project";
 import Modal from "./modal";
 import ProjectForm from "./project-form";
 import ProjectList from "./project-list";
+import "../css/landing.css";
 
 class Landing extends Component<
   {},
@@ -29,7 +30,6 @@ class Landing extends Component<
     };
     this.removeProject = this.removeProject.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.parseProjectForm = this.parseProjectForm.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
     this.addProjectFromForm = this.addProjectFromForm.bind(this);
   }
@@ -47,10 +47,6 @@ class Landing extends Component<
       (project) => project.projectIdentifier !== projectIdentifier
     );
     this.setState({ projects });
-  }
-
-  parseProjectForm(form: HTMLFormElement) {
-    console.log(form.elements);
   }
 
   componentDidMount() {
@@ -75,7 +71,18 @@ class Landing extends Component<
 
   addProjectFromForm() {
     const projects = [...this.state.projects];
-    projects.push(this.state.formProject);
+
+    // remove the T from datetime
+    let data: Project = { ...this.state.formProject };
+    let startDate: string = data.startDate;
+    let endDate: string = data.endDate;
+    startDate = startDate.replace("T", " ");
+    endDate = endDate.replace("T", " ");
+
+    data.startDate = startDate;
+    data.endDate = endDate;
+
+    projects.push(data);
     this.setState({ projects });
     this.closeModal();
     this.clearFormState();
@@ -114,11 +121,11 @@ class Landing extends Component<
       return <div>Loading</div>;
     }
     return (
-      <div>
+      <div id="main">
         <h1>Projects</h1>
         <button
-          id="centered-toggle-button"
-          className="toggle-button"
+          id="project-button"
+          className="button"
           onClick={() => {
             this.setModal(true);
             console.log("set Modal");

@@ -1,0 +1,42 @@
+#list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+
+#list-item {
+  display: grid;
+  grid-template-columns: 1fr 15fr 15fr 15fr;
+  grid-column-gap: 20px;
+  justify-items: stretch;
+  align-items: center;
+  border-bottom: 1px solid #6200ee;
+  line-height: 1.5;
+
+  padding: 15px 0;
+}
+
+#start-date {
+  text-align: center;
+}
+
+#end-date {
+  text-align: right;
+  padding-right: 7px;
+}
+
+#list-item:last-child {
+  border-bottom: none;
+  margin-bottom: 50px;
+}
+
+#list-item > * {
+  flex: 1;
+}
+
+#list-item > button {
+  flex: initial;
+  border-radius: 100%;
+  text-align: center;
+  height: 1.5rem;
+}
