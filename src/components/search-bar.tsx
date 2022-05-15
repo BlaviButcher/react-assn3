@@ -19,6 +19,14 @@ class SearchBar extends Component<
   render() {
     return (
       <form className="search-bar">
+        <select name="filters" id="select-filter">
+          <option value="name">Project Name</option>
+          <option value="date">Start Date</option>
+        </select>
+        <select name="order" id="select-order">
+          <option value="asc">ASC</option>
+          <option value="desc">DESC</option>
+        </select>
         <input
           value={this.state.searchTerm}
           type="text"
