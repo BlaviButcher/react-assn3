@@ -6,6 +6,9 @@ import ProjectList from "./project-list";
 import "../css/landing.css";
 import SearchBar from "./search-bar";
 
+// TODO: shift what function you can into components - a lot of lifted state makes it hard to keep things contained
+// TODO: fix add project on search
+
 class Landing extends Component<
   {},
   {
@@ -14,6 +17,7 @@ class Landing extends Component<
     showModal: boolean;
     formProject: Project;
     visibleProjects: Project[];
+    search: string;
   }
 > {
   constructor(props: any) {
@@ -30,16 +34,26 @@ class Landing extends Component<
         endDate: "",
         description: "",
       },
+      search: "",
     };
+
     this.removeProject = this.removeProject.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
     this.addProjectFromForm = this.addProjectFromForm.bind(this);
-    this.updateVisibleProjects = this.updateVisibleProjects.bind(this);
+    this.onSearchValueChange = this.onSearchValueChange.bind(this);
   }
 
   closeModal() {
     this.setModal(false);
+  }
+
+  onSearchValueChange(value: string) {
+    this.setState({ search: value });
+    let newProjects = this.state.projects.filter((project) => {
+      return project.projectName.toLowerCase().includes(value.toLowerCase());
+    });
+    this.setState({ visibleProjects: newProjects });
   }
 
   setModal(status: boolean) {
@@ -50,7 +64,12 @@ class Landing extends Component<
     const projects = this.state.projects.filter(
       (project) => project.projectIdentifier !== projectIdentifier
     );
+    const visibleProjects = this.state.visibleProjects.filter(
+      (project) => project.projectIdentifier !== projectIdentifier
+    );
+
     this.setState({ projects });
+    this.setState({ visibleProjects });
   }
 
   componentDidMount() {
@@ -62,6 +81,7 @@ class Landing extends Component<
       });
   }
 
+  // clears form state
   clearFormState() {
     this.setState({
       formProject: {
@@ -74,6 +94,7 @@ class Landing extends Component<
     });
   }
 
+  // gets project from form and updates current projects
   addProjectFromForm() {
     const projects = [...this.state.projects];
 
@@ -144,8 +165,8 @@ class Landing extends Component<
           Create New Project
         </button>
         <SearchBar
-          projects={this.state.projects}
-          onProjectChange={this.updateVisibleProjects}
+          onSearch={this.onSearchValueChange}
+          searchTerm={this.state.search}
         />
         <ProjectList
           projects={this.state.visibleProjects}

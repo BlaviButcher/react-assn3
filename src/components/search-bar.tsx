@@ -1,28 +1,19 @@
 import { Component } from "react";
 import "../css/search-bar.css";
-import { Project } from "../types/project";
 
 class SearchBar extends Component<
-  { projects: Project[]; onProjectChange: Function },
+  { onSearch: Function; searchTerm: string },
   { searchTerm: string }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
-      searchTerm: "",
+      searchTerm: this.props.searchTerm,
     };
   }
 
-  onValueChage(value: string) {
-    this.setState({ searchTerm: value });
-    let newProjects = this.props.projects.filter((project) => {
-      return project.projectName.toLowerCase().includes(value.toLowerCase());
-    });
-    this.props.onProjectChange(newProjects);
-  }
-
   clear() {
-    this.onValueChage("");
+    this.props.onSearch("");
   }
 
   render() {
@@ -33,7 +24,10 @@ class SearchBar extends Component<
           type="text"
           placeholder="Search..."
           className="search-input"
-          onChange={(e) => this.onValueChage(e.target.value)}
+          onChange={(e) => {
+            this.setState({ searchTerm: e.target.value });
+            this.props.onSearch(e.target.value);
+          }}
         />
         <button
           type="submit"
