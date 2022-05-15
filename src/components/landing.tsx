@@ -50,6 +50,8 @@ class Landing extends Component<
       <div>
         <h1>Projects</h1>
         <button
+          id="centered-toggle-button"
+          className="toggle-button"
           onClick={() => {
             this.setModal(true);
             console.log("set Modal");
@@ -61,7 +63,7 @@ class Landing extends Component<
           projects={this.state.projects}
           removeButtonClick={this.removeProject}
         />
-        <Modal open={this.state.showModal} onClose={this.closeModal}>
+        <Modal open={this.state.showModal} onClose={this.closeModal} title="Create Project">
           <div>hello world</div>
         </Modal>
       </div>
