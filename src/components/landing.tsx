@@ -42,6 +42,7 @@ class Landing extends Component<
     this.updateFormData = this.updateFormData.bind(this);
     this.addProjectFromForm = this.addProjectFromForm.bind(this);
     this.onSearchValueChange = this.onSearchValueChange.bind(this);
+    this.filterResults = this.filterResults.bind(this);
   }
 
   closeModal() {
@@ -114,6 +115,19 @@ class Landing extends Component<
     this.clearFormState();
   }
 
+  filterResults(column: string, order: string) {
+    let projects = this.state.visibleProjects;
+    let sortedProjects = projects.sort((a, b) => {
+      if (order === "asc") {
+        return a.projectName > b.projectName ? 1 : -1;
+      } else {
+        return a.projectName < b.projectName ? 1 : -1;
+      }
+    });
+    console.log(sortedProjects);
+    this.setState({ visibleProjects: sortedProjects });
+  }
+
   // update projects to given projects
   updateVisibleProjects(projects: Project[]) {
     this.setState({ visibleProjects: projects });
@@ -167,6 +181,7 @@ class Landing extends Component<
         <SearchBar
           onSearch={this.onSearchValueChange}
           searchTerm={this.state.search}
+          filter={this.filterResults}
         />
         <ProjectList
           projects={this.state.visibleProjects}

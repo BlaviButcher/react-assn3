@@ -2,7 +2,7 @@ import { Component } from "react";
 import "../css/search-bar.css";
 
 class SearchBar extends Component<
-  { onSearch: Function; searchTerm: string },
+  { onSearch: Function; searchTerm: string; filter: Function },
   { searchTerm: string }
 > {
   constructor(props: any) {
@@ -16,14 +16,24 @@ class SearchBar extends Component<
     this.props.onSearch("");
   }
 
+  onFilter() {
+    let filter = document.getElementById("select-filter") as HTMLSelectElement;
+    let order = document.getElementById("select-order") as HTMLSelectElement;
+    this.props.filter(filter.value, order.value);
+  }
+
   render() {
     return (
       <form className="search-bar">
-        <select name="filters" id="select-filter">
+        <select
+          name="filters"
+          id="select-filter"
+          onChange={() => this.onFilter()}
+        >
           <option value="name">Project Name</option>
           <option value="date">Start Date</option>
         </select>
-        <select name="order" id="select-order">
+        <select name="order" id="select-order" onChange={() => this.onFilter()}>
           <option value="asc">ASC</option>
           <option value="desc">DESC</option>
         </select>
