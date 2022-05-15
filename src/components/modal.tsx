@@ -15,15 +15,17 @@ class Modal extends Component<{
             <div className="modal">
               <h2>{this.props.title}</h2>
               <div className="modal-content">{this.props.children}</div>
+              <div className="button-wrap">
               <button
                 id="close"
-                className="toggle-button"
+                className="close-button"
                 onClick={() => {
                   this.props.onClose();
                 }}
               >
                 Close
               </button>
+              </div>
             </div>
           </div>
           <div className="modal-overlay" id="modal-overlay"></div>
