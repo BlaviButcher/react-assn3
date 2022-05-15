@@ -18,8 +18,8 @@ class ProjectList extends Component<{
               X
             </button>
             <div>{project.projectName}</div>
-            <div>{project.start_date}</div>
-            <div>{project.end_date}</div>
+            <div>{project.startDate}</div>
+            <div>{project.endDate}</div>
           </div>
         ))}
       </div>
