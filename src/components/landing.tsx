@@ -1,15 +1,29 @@
 import { Component } from "react";
 import { Project } from "../types/project";
+import Modal from "./modal";
 import ProjectList from "./project-list";
 
-class Landing extends Component<{}, { projects: Project[]; loading: boolean }> {
+class Landing extends Component<
+  {},
+  { projects: Project[]; loading: boolean; showModal: boolean }
+> {
   constructor(props: any) {
     super(props);
     this.state = {
       projects: [],
       loading: true,
+      showModal: false,
     };
     this.removeProject = this.removeProject.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+  }
+
+  closeModal() {
+    this.setModal(false);
+  }
+
+  setModal(status: boolean) {
+    this.setState({ showModal: status });
   }
 
   removeProject(projectIdentifier: string) {
@@ -23,7 +37,6 @@ class Landing extends Component<{}, { projects: Project[]; loading: boolean }> {
     fetch("data.json")
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
         this.setState({ projects: result, loading: false });
       });
   }
@@ -36,11 +49,21 @@ class Landing extends Component<{}, { projects: Project[]; loading: boolean }> {
     return (
       <div>
         <h1>Projects</h1>
-        <button>Create New Project</button>
+        <button
+          onClick={() => {
+            this.setModal(true);
+            console.log("set Modal");
+          }}
+        >
+          Create New Project
+        </button>
         <ProjectList
           projects={this.state.projects}
           removeButtonClick={this.removeProject}
         />
+        <Modal open={this.state.showModal} onClose={this.closeModal}>
+          <div>hello world</div>
+        </Modal>
       </div>
     );
   }
