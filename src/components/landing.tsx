@@ -4,6 +4,7 @@ import Modal from "./modal";
 import ProjectForm from "./project-form";
 import ProjectList from "./project-list";
 import "../css/landing.css";
+import SearchBar from "./search-bar";
 
 class Landing extends Component<
   {},
@@ -12,12 +13,14 @@ class Landing extends Component<
     loading: boolean;
     showModal: boolean;
     formProject: Project;
+    visibleProjects: Project[];
   }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
       projects: [],
+      visibleProjects: [],
       loading: true,
       showModal: false,
       formProject: {
@@ -32,6 +35,7 @@ class Landing extends Component<
     this.closeModal = this.closeModal.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
     this.addProjectFromForm = this.addProjectFromForm.bind(this);
+    this.updateVisibleProjects = this.updateVisibleProjects.bind(this);
   }
 
   closeModal() {
@@ -54,6 +58,7 @@ class Landing extends Component<
       .then((response) => response.json())
       .then((result) => {
         this.setState({ projects: result, loading: false });
+        this.setState({ visibleProjects: result });
       });
   }
 
@@ -86,6 +91,11 @@ class Landing extends Component<
     this.setState({ projects });
     this.closeModal();
     this.clearFormState();
+  }
+
+  // update projects to given projects
+  updateVisibleProjects(projects: Project[]) {
+    this.setState({ visibleProjects: projects });
   }
 
   // update form data when fields are change to keep sync
@@ -133,8 +143,12 @@ class Landing extends Component<
         >
           Create New Project
         </button>
-        <ProjectList
+        <SearchBar
           projects={this.state.projects}
+          onProjectChange={this.updateVisibleProjects}
+        />
+        <ProjectList
+          projects={this.state.visibleProjects}
           removeButtonClick={this.removeProject}
         />
         <Modal
