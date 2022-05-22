@@ -6,7 +6,8 @@ class SearchBar extends Component<
     onSearch: Function;
     searchTerm: string;
     filter: Function;
-    refresh: Boolean;
+    refreshSearch: Boolean;
+    refreshFilter: Boolean;
   },
   { searchTerm: string }
 > {
@@ -30,8 +31,11 @@ class SearchBar extends Component<
 
   // if refresh has been requested then refresh the search
   componentDidUpdate(prevProps: any) {
-    if (this.props.refresh) {
+    if (this.props.refreshSearch) {
       this.props.onSearch(this.state.searchTerm);
+    }
+    if (this.props.refreshFilter) {
+      this.onFilter();
     }
   }
   render() {

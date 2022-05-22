@@ -11,11 +11,13 @@ class Modal extends Component<{
     super(props);
     this.escFunction = this.escFunction.bind(this);
   }
+  // esc key functionality
   escFunction(event: any) {
     if (event.key === "Escape") {
       this.props.onClose();
     }
   }
+  // add and remove escape key functionality - model exists in background so must be off when not mounted
   componentDidMount() {
     document.addEventListener("keydown", this.escFunction, false);
   }

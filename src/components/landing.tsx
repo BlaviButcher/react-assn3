@@ -20,6 +20,7 @@ class Landing extends Component<
     visibleProjects: Project[];
     search: string;
     refreshSearch: Boolean;
+    refreshFilter: Boolean;
   }
 > {
   constructor(props: any) {
@@ -45,6 +46,7 @@ class Landing extends Component<
       search: "",
       // Should we refresh the visible projects
       refreshSearch: false,
+      refreshFilter: false,
     };
 
     // BOUND
@@ -71,6 +73,7 @@ class Landing extends Component<
     // refresh search can be called from anywhere, it allows us to run this search function if we just want to refresh after adding something or deleting etc
     // if it's not set to false we get a loop
     this.setState({ refreshSearch: false });
+    this.setState({ refreshFilter: true });
   }
 
   // set modal to given value - could be called openModal and we remove the other. One will become an artifact during refactor
@@ -161,12 +164,19 @@ class Landing extends Component<
     let projects = this.state.visibleProjects;
     let sortedProjects = projects.sort((a, b) => {
       if (order === "asc") {
-        return a.projectName > b.projectName ? 1 : -1;
+        return a.projectName.toLocaleLowerCase() >
+          b.projectName.toLocaleLowerCase()
+          ? 1
+          : -1;
       } else {
-        return a.projectName < b.projectName ? 1 : -1;
+        return a.projectName.toLocaleLowerCase() <
+          b.projectName.toLocaleLowerCase()
+          ? 1
+          : -1;
       }
     });
     this.setState({ visibleProjects: sortedProjects });
+    this.setState({ refreshFilter: false });
   }
 
   // update projects to given projects
@@ -215,7 +225,6 @@ class Landing extends Component<
           className="button"
           onClick={() => {
             this.setModal(true);
-            console.log("set Modal");
           }}
         >
           Create New Project
@@ -224,7 +233,8 @@ class Landing extends Component<
           onSearch={this.onSearchValueChange}
           searchTerm={this.state.search}
           filter={this.filterResults}
-          refresh={this.state.refreshSearch}
+          refreshSearch={this.state.refreshSearch}
+          refreshFilter={this.state.refreshFilter}
         />
         <ProjectList
           projects={this.state.visibleProjects}
