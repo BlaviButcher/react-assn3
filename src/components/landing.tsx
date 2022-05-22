@@ -8,6 +8,7 @@ import SearchBar from "./search-bar";
 
 // TODO: shift what function you can into components - a lot of lifted state makes it hard to keep things contained
 // TODO: fix add project on search
+// TODO: have some eternal project id state
 
 class Landing extends Component<
   {},
@@ -18,15 +19,21 @@ class Landing extends Component<
     formProject: Project;
     visibleProjects: Project[];
     search: string;
+    refreshSearch: Boolean;
   }
 > {
   constructor(props: any) {
     super(props);
     this.state = {
+      // holds all projects - even if not shown
       projects: [],
+      // the projects that can be seen
       visibleProjects: [],
+      // Are we loading
       loading: true,
+      // is modal shown
       showModal: false,
+      // data help in the form
       formProject: {
         projectIdentifier: "",
         projectName: "",
@@ -34,9 +41,13 @@ class Landing extends Component<
         endDate: "",
         description: "",
       },
+      // search value
       search: "",
+      // Should we refresh the visible projects
+      refreshSearch: false,
     };
 
+    // BOUND
     this.removeProject = this.removeProject.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
@@ -45,26 +56,36 @@ class Landing extends Component<
     this.filterResults = this.filterResults.bind(this);
   }
 
+  // self explanatory
   closeModal() {
     this.setModal(false);
   }
 
+  // update search value and preform a search, updating the visible projects
   onSearchValueChange(value: string) {
     this.setState({ search: value });
     let newProjects = this.state.projects.filter((project) => {
       return project.projectName.toLowerCase().includes(value.toLowerCase());
     });
     this.setState({ visibleProjects: newProjects });
+    // refresh search can be called from anywhere, it allows us to run this search function if we just want to refresh after adding something or deleting etc
+    // if it's not set to false we get a loop
+    this.setState({ refreshSearch: false });
   }
 
+  // set modal to given value - could be called openModal and we remove the other. One will become an artifact during refactor
   setModal(status: boolean) {
     this.setState({ showModal: status });
   }
 
+  // removes a project given an id
   removeProject(projectIdentifier: string) {
     const projects = this.state.projects.filter(
       (project) => project.projectIdentifier !== projectIdentifier
     );
+    // we unfortunately cannot copy as they both could have different contents
+    // In future refactor will copy one to the other then call searchRefresh to filter by search again and get
+    // new set of visible projects
     const visibleProjects = this.state.visibleProjects.filter(
       (project) => project.projectIdentifier !== projectIdentifier
     );
@@ -73,12 +94,16 @@ class Landing extends Component<
     this.setState({ visibleProjects });
   }
 
+  // Get the data when component mounts
   componentDidMount() {
     fetch("data.json")
       .then((response) => response.json())
       .then((result) => {
-        this.setState({ projects: result, loading: false });
-        this.setState({ visibleProjects: result });
+        this.setState({
+          projects: result,
+          loading: false,
+          visibleProjects: result,
+        });
       });
   }
 
@@ -97,10 +122,22 @@ class Landing extends Component<
 
   // gets project from form and updates current projects
   addProjectFromForm() {
+    // get copy of current projects
     const projects = [...this.state.projects];
+    let projectIDs: string[] = projects.map(
+      (project) => project.projectIdentifier
+    );
+
+    // get entered project from form
+    let data: Project = { ...this.state.formProject };
+
+    // if project id already exists
+    if (projectIDs.includes(data.projectIdentifier)) {
+      alert("Project ID already exists");
+      return;
+    }
 
     // remove the T from datetime
-    let data: Project = { ...this.state.formProject };
     let startDate: string = data.startDate;
     let endDate: string = data.endDate;
     startDate = startDate.replace("T", " ");
@@ -109,12 +146,17 @@ class Landing extends Component<
     data.startDate = startDate;
     data.endDate = endDate;
 
+    // push new project to projects
     projects.push(data);
+    // update state of projects
     this.setState({ projects });
+    // research to update visible projects
+    this.setState({ refreshSearch: true });
     this.closeModal();
     this.clearFormState();
   }
 
+  // filter results based on dropdowns selected - doesn't implement date sorting
   filterResults(column: string, order: string) {
     let projects = this.state.visibleProjects;
     let sortedProjects = projects.sort((a, b) => {
@@ -124,7 +166,6 @@ class Landing extends Component<
         return a.projectName < b.projectName ? 1 : -1;
       }
     });
-    console.log(sortedProjects);
     this.setState({ visibleProjects: sortedProjects });
   }
 
@@ -137,6 +178,7 @@ class Landing extends Component<
   updateFormData(target: string, value: any) {
     let oldData: Project = { ...this.state.formProject };
 
+    // There must be a better way
     switch (target) {
       case "projectIdentifier":
         oldData.projectIdentifier = value;
@@ -182,6 +224,7 @@ class Landing extends Component<
           onSearch={this.onSearchValueChange}
           searchTerm={this.state.search}
           filter={this.filterResults}
+          refresh={this.state.refreshSearch}
         />
         <ProjectList
           projects={this.state.visibleProjects}

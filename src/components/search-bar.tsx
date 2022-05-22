@@ -2,7 +2,12 @@ import { Component } from "react";
 import "../css/search-bar.css";
 
 class SearchBar extends Component<
-  { onSearch: Function; searchTerm: string; filter: Function },
+  {
+    onSearch: Function;
+    searchTerm: string;
+    filter: Function;
+    refresh: Boolean;
+  },
   { searchTerm: string }
 > {
   constructor(props: any) {
@@ -16,12 +21,19 @@ class SearchBar extends Component<
     this.props.onSearch("");
   }
 
+  // filter results
   onFilter() {
     let filter = document.getElementById("select-filter") as HTMLSelectElement;
     let order = document.getElementById("select-order") as HTMLSelectElement;
     this.props.filter(filter.value, order.value);
   }
 
+  // if refresh has been requested then refresh the search
+  componentDidUpdate(prevProps: any) {
+    if (this.props.refresh) {
+      this.props.onSearch(this.state.searchTerm);
+    }
+  }
   render() {
     return (
       <form className="search-bar">

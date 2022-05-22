@@ -6,6 +6,10 @@ class ProjectList extends Component<{
   projects: Project[];
   removeButtonClick: Function;
 }> {
+  // componentDidUpdate(prevProps: any) {
+  //   console.log("hello");
+  // }
+
   render() {
     return (
       <div id="list">
