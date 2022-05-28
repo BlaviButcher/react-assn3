@@ -97,8 +97,8 @@ class Landing extends Component<
     this.setState({ visibleProjects });
   }
 
-  // Get the data when component mounts
   componentDidMount() {
+    // Get the data when component mounts
     fetch("data.json")
       .then((response) => response.json())
       .then((result) => {
@@ -162,19 +162,42 @@ class Landing extends Component<
   // filter results based on dropdowns selected - doesn't implement date sorting
   filterResults(column: string, order: string) {
     let projects = this.state.visibleProjects;
-    let sortedProjects = projects.sort((a, b) => {
-      if (order === "asc") {
-        return a.projectName.toLocaleLowerCase() >
-          b.projectName.toLocaleLowerCase()
-          ? 1
-          : -1;
-      } else {
+    let sortedProjects: Project[] = [];
+    console.log(column);
+    if (column === "name") {
+      sortedProjects = projects.sort((a, b) => {
+        if (order === "asc") {
+          return a.projectName.toLocaleLowerCase() >
+            b.projectName.toLocaleLowerCase()
+            ? 1
+            : -1;
+        }
+        // if descending
         return a.projectName.toLocaleLowerCase() <
           b.projectName.toLocaleLowerCase()
           ? 1
           : -1;
-      }
-    });
+      });
+    }
+    // else is date
+    else {
+      sortedProjects = projects.sort((a, b) => {
+        if (order === "asc") {
+          // if descending
+          if (new Date(b.startDate).getTime() < new Date(a.startDate).getTime())
+            return 1;
+          if (new Date(b.startDate).getTime() > new Date(a.startDate).getTime())
+            return -1;
+          return 0;
+        }
+        // if descending
+        if (new Date(b.startDate).getTime() < new Date(a.startDate).getTime())
+          return -1;
+        if (new Date(b.startDate).getTime() > new Date(a.startDate).getTime())
+          return 1;
+        return 0;
+      });
+    }
     this.setState({ visibleProjects: sortedProjects });
     this.setState({ refreshFilter: false });
   }
